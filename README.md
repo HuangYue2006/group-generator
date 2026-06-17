@@ -10,4 +10,4 @@
 
 ## 連結
 
-https://hpy.github.io/group-generator/
+https://huangyue2006.github.io/group-generator/
