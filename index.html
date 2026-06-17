@@ -95,6 +95,25 @@ textarea:focus {
   background: #ddd;
 }
 
+.btn-lane {
+  background: #9c27b0;
+  color: white;
+  box-shadow: 0 4px 14px rgba(156,39,176,0.3);
+}
+
+.btn-lane:hover {
+  box-shadow: 0 6px 20px rgba(156,39,176,0.4);
+}
+
+.btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.btn:disabled:active {
+  transform: none;
+}
+
 .groups {
   flex: 1;
   display: grid;
@@ -187,6 +206,9 @@ textarea:focus {
       <button class="btn btn-primary" onclick="shuffle()">隨機分組</button>
       <button class="btn btn-secondary" onclick="clearAll()">清空</button>
     </div>
+    <div class="btn-row">
+      <button class="btn btn-lane" id="laneBtn" onclick="assignLanes()" disabled>隨機分路</button>
+    </div>
   </div>
 
   <div class="groups">
@@ -206,6 +228,9 @@ textarea:focus {
 </div>
 
 <script>
+let currentGroupA = [];
+let currentGroupB = [];
+
 function shuffle() {
   const raw = document.getElementById('input').value.trim();
   if (!raw) return;
@@ -219,22 +244,55 @@ function shuffle() {
   }
 
   const mid = Math.ceil(names.length / 2);
-  const groupA = names.slice(0, mid);
-  const groupB = names.slice(mid);
+  currentGroupA = names.slice(0, mid);
+  currentGroupB = names.slice(mid);
 
-  render('groupA', groupA);
-  render('groupB', groupB);
+  renderGroup('groupA', currentGroupA);
+  renderGroup('groupB', currentGroupB);
+
+  document.getElementById('laneBtn').disabled = names.length !== 10;
 }
 
-function render(id, members) {
+function renderGroup(id, members) {
   const el = document.getElementById(id);
   el.innerHTML = members.map(name => `<div class="member-card">${name}</div>`).join('');
 }
 
+function assignLanes() {
+  if (currentGroupA.length !== 5 || currentGroupB.length !== 5) return;
+
+  const lanes = ['TOP', 'JK', 'MID', 'AD', 'SUP'];
+
+  const shuffleArr = arr => {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  };
+
+  const aShuffled = shuffleArr(currentGroupA);
+  const bShuffled = shuffleArr(currentGroupB);
+
+  renderLane('groupA', aShuffled, lanes);
+  renderLane('groupB', bShuffled, lanes);
+}
+
+function renderLane(id, members, lanes) {
+  const el = document.getElementById(id);
+  el.innerHTML = members.map((name, i) =>
+    `<div class="member-card">${name} ${lanes[i]}</div>`
+  ).join('');
+}
+
 function clearAll() {
   document.getElementById('input').value = '';
-  render('groupA', []);
-  render('groupB', []);
+  currentGroupA = [];
+  currentGroupB = [];
+  renderGroup('groupA', []);
+  renderGroup('groupB', []);
+  document.getElementById('laneBtn').disabled = true;
 }
 </script>
 </body>
