@@ -154,12 +154,20 @@ textarea:focus {
 }
 
 .member-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   background: #f8f9fc;
   border-radius: 10px;
   padding: 14px 18px;
   font-size: 18px;
   font-weight: 500;
   color: #333;
+}
+
+.lane-tag {
+  color: #888;
+  font-weight: 600;
 }
 
 .group-empty {
@@ -282,7 +290,7 @@ function assignLanes() {
 function renderLane(id, members, lanes) {
   const el = document.getElementById(id);
   el.innerHTML = members.map((name, i) =>
-    `<div class="member-card">${lanes[i]} ${name}</div>`
+    `<div class="member-card"><span>${name}</span><span class="lane-tag">${lanes[i]}</span></div>`
   ).join('');
 }
 
