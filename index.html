@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>分組產生器</title>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  background: #f0f2f5;
+  color: #1a1a2e;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.container {
+  width: 100%;
+  max-width: 800px;
+}
+
+h1 {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 32px;
+  color: #16213e;
+}
+
+.input-section {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  margin-bottom: 32px;
+}
+
+textarea {
+  width: 100%;
+  min-height: 180px;
+  padding: 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  font-size: 16px;
+  font-family: inherit;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+textarea:focus {
+  border-color: #4a6cf7;
+}
+
+.btn-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.btn {
+  flex: 1;
+  padding: 14px 24px;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.1s, box-shadow 0.2s;
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn-primary {
+  background: #4a6cf7;
+  color: white;
+  box-shadow: 0 4px 14px rgba(74,108,247,0.3);
+}
+
+.btn-primary:hover {
+  box-shadow: 0 6px 20px rgba(74,108,247,0.4);
+}
+
+.btn-secondary {
+  background: #e8e8e8;
+  color: #333;
+}
+
+.btn-secondary:hover {
+  background: #ddd;
+}
+
+.groups {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.group {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+
+.group h2 {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 3px solid;
+}
+
+.group-a h2 {
+  color: #4a6cf7;
+  border-color: #4a6cf7;
+}
+
+.group-b h2 {
+  color: #e74c3c;
+  border-color: #e74c3c;
+}
+
+.member-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.member-card {
+  background: #f8f9fc;
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+}
+
+.group-empty {
+  color: #aaa;
+  text-align: center;
+  padding: 24px 0;
+  font-size: 14px;
+}
+
+@media (max-width: 600px) {
+  body {
+    padding: 20px 12px;
+  }
+
+  .groups {
+    grid-template-columns: 1fr;
+  }
+
+  .btn-row {
+    flex-direction: column;
+  }
+
+  textarea {
+    min-height: 140px;
+  }
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>分組產生器</h1>
+
+  <div class="input-section">
+    <textarea id="input" placeholder="每行輸入一個名字&#10;例：&#10;張小華&#10;李小美&#10;王大明"></textarea>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="shuffle()">隨機分組</button>
+      <button class="btn btn-secondary" onclick="clearAll()">清空</button>
+    </div>
+  </div>
+
+  <div class="groups">
+    <div class="group group-a">
+      <h2>A 組</h2>
+      <div class="member-list" id="groupA">
+        <div class="group-empty">請輸入名字後點擊分組</div>
+      </div>
+    </div>
+    <div class="group group-b">
+      <h2>B 組</h2>
+      <div class="member-list" id="groupB">
+        <div class="group-empty">請輸入名字後點擊分組</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function shuffle() {
+  const raw = document.getElementById('input').value.trim();
+  if (!raw) return;
+
+  const names = raw.split('\n').map(s => s.trim()).filter(Boolean);
+  if (names.length < 2) return;
+
+  for (let i = names.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [names[i], names[j]] = [names[j], names[i]];
+  }
+
+  const mid = Math.ceil(names.length / 2);
+  const groupA = names.slice(0, mid);
+  const groupB = names.slice(mid);
+
+  render('groupA', groupA);
+  render('groupB', groupB);
+}
+
+function render(id, members) {
+  const el = document.getElementById(id);
+  el.innerHTML = members.map(name => `<div class="member-card">${name}</div>`).join('');
+}
+
+function clearAll() {
+  document.getElementById('input').value = '';
+  render('groupA', []);
+  render('groupB', []);
+}
+</script>
+</body>
+</html>
