@@ -23,23 +23,18 @@ body {
 
 .container {
   width: 100%;
-  max-width: 800px;
-}
-
-h1 {
-  text-align: center;
-  font-size: 28px;
-  font-weight: 700;
-  margin-bottom: 32px;
-  color: #16213e;
+  max-width: 900px;
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
 }
 
 .input-section {
+  flex: 0 0 300px;
   background: white;
   border-radius: 16px;
   padding: 24px;
   box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-  margin-bottom: 32px;
 }
 
 textarea {
@@ -100,9 +95,11 @@ textarea:focus {
 }
 
 .groups {
+  flex: 1;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;
+  min-width: 0;
 }
 
 .group {
@@ -120,14 +117,14 @@ textarea:focus {
   border-bottom: 3px solid;
 }
 
-.group-a h2 {
-  color: #4a6cf7;
-  border-color: #4a6cf7;
+.group-blue h2 {
+  color: #2196F3;
+  border-color: #2196F3;
 }
 
-.group-b h2 {
-  color: #e74c3c;
-  border-color: #e74c3c;
+.group-red h2 {
+  color: #f44336;
+  border-color: #f44336;
 }
 
 .member-list {
@@ -152,13 +149,23 @@ textarea:focus {
   font-size: 14px;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 700px) {
   body {
     padding: 20px 12px;
   }
 
+  .container {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .input-section {
+    flex: none;
+    width: 100%;
+  }
+
   .groups {
-    grid-template-columns: 1fr;
+    width: 100%;
   }
 
   .btn-row {
@@ -173,8 +180,6 @@ textarea:focus {
 </head>
 <body>
 <div class="container">
-  <h1>分組產生器</h1>
-
   <div class="input-section">
     <textarea id="input" placeholder="每行輸入一個名字&#10;例：&#10;張小華&#10;李小美&#10;王大明"></textarea>
     <div class="btn-row">
@@ -184,14 +189,14 @@ textarea:focus {
   </div>
 
   <div class="groups">
-    <div class="group group-a">
-      <h2>A 組</h2>
+    <div class="group group-blue">
+      <h2>藍方</h2>
       <div class="member-list" id="groupA">
         <div class="group-empty">請輸入名字後點擊分組</div>
       </div>
     </div>
-    <div class="group group-b">
-      <h2>B 組</h2>
+    <div class="group group-red">
+      <h2>紅方</h2>
       <div class="member-list" id="groupB">
         <div class="group-empty">請輸入名字後點擊分組</div>
       </div>
